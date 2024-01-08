@@ -144,3 +144,31 @@ class DoublyLinkedList:
         return self.tail.value
 
 
+class Stack:
+
+    def __init__(self):
+        self._dll = DoublyLinkedList()
+
+    def push(self, item: Any):
+        self._dll.prepend(item)
+
+    def pop(self):
+        self._dll.remove_first()
+
+    def peek(self):
+        self._dll.peek_first()
+
+
+class Queue:
+
+    def __init__(self):
+        self._dll = DoublyLinkedList()
+
+    def add(self, item: Any):
+        self._dll.append(item)
+
+    def remove(self):
+        self._dll.remove_last()
+
+    def peek(self):
+        self._dll.peek_last()
