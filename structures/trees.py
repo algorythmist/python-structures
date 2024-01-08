@@ -29,7 +29,10 @@ class BinarySearchTree:
 
     def __init__(self):
         self._root = None
-        # TODO: size
+        self._size = 0
+
+    def __len__(self):
+        return self._size
 
     def __contains__(self, value):
         return self._find(value, self._root) is not None
@@ -46,6 +49,7 @@ class BinarySearchTree:
 
     def insert(self, value: C):
         self._root = self._insert(value, self._root, None)
+        self._size += 1
 
     def _insert(self, value: C, node: BinaryTreeNode, parent: BinaryTreeNode) -> BinaryTreeNode:
         if not node:
