@@ -4,20 +4,20 @@ from structures.heap import MaxHeap
 
 def test_bubble_up():
     heap = MaxHeap(10)
-    heap._array = [None, 20, 18, 15, 14, 12, 13, 3]
-    heap._size = 7
+    heap._array = [20, 18, 15, 14, 12, 13, 3]
+    heap._size = len(heap._array)
     assert heap.is_valid()
 
-    heap._array = [None, 20, 18, 15, 14, 12, 13, 3, 21]
-    heap._size = 8
+    heap._array = [20, 18, 15, 14, 12, 13, 3, 21]
+    heap._size = len(heap._array)
     heap.bubble_up(8)
     assert heap.is_valid()
 
 
 def test_bubble_down():
     heap = MaxHeap(10)
-    heap._array = [None, 5, 18, 15, 14, 12, 13, 3]
-    heap._size = 7
+    heap._array = [5, 18, 15, 14, 12, 13, 3]
+    heap._size = len(heap._array)
     heap.bubble_down(1)
     print(heap)
     assert heap.is_valid()
