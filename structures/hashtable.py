@@ -4,6 +4,7 @@ from typing import Any
 
 from structures.lists import LinkedList
 
+#TODO: use deterministic hash function
 
 class Hashtable(ABC):
 
@@ -76,7 +77,8 @@ class LinkedListHashtable(Hashtable):
         index = hash(key) % self._size
         return self._array[index]
 
-    def _collect_keys(self, linked_list: LinkedList):
+    @staticmethod
+    def _collect_keys(linked_list: LinkedList):
         keys = []
         current = linked_list.head
         while current:
@@ -105,3 +107,48 @@ class LinkedListHashtable(Hashtable):
             index += 1
             current = current.next
         return -1
+
+
+class ChainedHashtable(Hashtable):
+
+    def __init__(self, size=1000):
+        self._array = [None] * size
+        self._size = 0
+
+    def __len__(self):
+        return self._size
+
+    def __setitem__(self, key: Any, value: Any):
+        index = hash(key) % len(self._array)
+        for i in range(index, len(self._array)):
+            if not self._array[i]:
+                self._array[i] = (key, value)
+                self._size += 1
+                return
+        raise IndexError("Hashtable size exceeded")
+
+    def __getitem__(self, key: Any) -> Any:
+        index = hash(key) % len(self._array)
+        for i in range(index, len(self._array)):
+            if self._array[i]:
+                k, value = self._array[i]
+                if k == key:
+                    return value
+        return None
+
+    def __contains__(self, key: Any) -> bool:
+        return any(self._array[i][0] for i in range(len(self._array)) if self._array[i])\
+
+
+    def __del__(self):
+        #TODO: implement
+        pass
+
+    def get_keys(self) -> list[Any]:
+        return [self._array[i][0] for i in range(len(self._array)) if self._array[i]]
+
+    def __repr__(self):
+        return ','.join([str((i,) + self._array[i]) for i in range(len(self._array)) if self._array[i]])
+
+    def __str__(self):
+        return self.__repr__()
