@@ -26,6 +26,14 @@ def test_singly_linked_list():
     assert elements == [5, 4, 1]
 
 
+def test_delete_head():
+    ll = LinkedList()
+    ll.insert('head')
+    ll.delete(0)
+    assert ll.is_empty()
+    assert len(ll) == 0
+
+
 def test_doubly_linked_list():
     stack = DoublyLinkedList()
     assert stack.is_empty()
