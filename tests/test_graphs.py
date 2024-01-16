@@ -1,4 +1,8 @@
 from structures.graphs import *
+import os
+
+# Set the working directory to the parent directory
+os.chdir(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 
 def test_read():
