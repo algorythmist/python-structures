@@ -16,6 +16,16 @@ def test_read():
     assert str(graph.get_adjacent_vertices('C')) == "['G', 'F', 'H']"
 
 
+def test_undirected_graph():
+    graph = MutableAdjacencyGraph.read_graph("tinyFile.txt", directed=False)
+    assert graph.num_vertices == 8
+    assert graph.num_edges == 13
+    assert graph.get_adjacent_vertices('F') == ['A', 'C', 'E', 'B', 'G']
+    assert str(graph.get_adjacent_edges('F')) == '[(F, A), (F, C), (F, E), (F, B), (F, G)]'
+    assert str(graph.get_adjacent_edges('H')) == '[(H, C), (H, D), (H, G)]'
+    assert graph.get_adjacent_vertices('C') == ['B', 'G', 'F', 'H', 'D']
+
+
 def test_dfs():
     graph = MutableAdjacencyGraph.read_graph("tinyFile.txt")
     vertices = []

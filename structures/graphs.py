@@ -2,6 +2,7 @@ from abc import ABC
 from typing import Callable, Any
 from structures.lists import Queue
 
+
 class Edge:
 
     def __init__(self, source, target, weight=None):
@@ -14,6 +15,12 @@ class Edge:
 
     def __str__(self):
         return self.__repr__()
+
+    def __eq__(self, other):
+        return self.source == other.source and self.target == other.target
+
+    def __hash__(self):
+        return hash((self.source, self.target))
 
 
 class Graph(ABC):
@@ -61,14 +68,20 @@ class MutableAdjacencyGraph(Graph):
     def add_edge(self, source, target, weight=None):
         self.add_vertex(source)
         self.add_vertex(target)
-        # TODO: check if edge exists
-        self.adjacency[source].append(Edge(source, target, weight))
+        # check if edge exists
+        edge = Edge(source, target, weight)
+        if edge in self.adjacency[source]:
+            return
+        self.adjacency[source].append(edge)
+        if not self.directed:
+            reverse_edge = Edge(target, source, weight)
+            if reverse_edge not in self.adjacency[target]:
+                self.adjacency[target].append(reverse_edge)
         self.num_edges += 1
-        # TODO: handle undirected
 
     @staticmethod
-    def read_graph(filename):
-        graph = MutableAdjacencyGraph()
+    def read_graph(filename, directed=True):
+        graph = MutableAdjacencyGraph(directed=directed)
         with open(filename) as file:
             for line in file:
                 tokens = line.strip().split(':')
@@ -80,7 +93,6 @@ class MutableAdjacencyGraph(Graph):
 
 
 def traverse_dfs(graph: Graph, visitor: Callable[[Any], None]):
-
     def _traverse(graph: Graph, vertex, visitor, visited):
         if vertex in visited:
             return
@@ -94,7 +106,9 @@ def traverse_dfs(graph: Graph, visitor: Callable[[Any], None]):
         _traverse(graph, vertex, visitor, visited)
 
 
-def traverse_bfs(graph: Graph, visitor: Callable[[Any], None]):
+def traverse_bfs(graph: Graph,
+                 vertex_visitor: Callable[[Any], None] = lambda v: None,
+                 edge_visitor: Callable[[Any], None] = lambda e: None):
     queue = Queue()
     visited = set()
     for vertex in graph:
@@ -104,7 +118,9 @@ def traverse_bfs(graph: Graph, visitor: Callable[[Any], None]):
             if v in visited:
                 continue
             visited.add(v)
-            visitor(v)
-            for neighbor in graph.get_adjacent_vertices(v):
+            vertex_visitor(v)
+            for edge in graph.get_adjacent_edges(v):
+                edge_visitor(edge)
+                neighbor = edge.target
                 if neighbor not in visited:
                     queue.add(neighbor)
